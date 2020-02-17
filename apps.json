@@ -2,7 +2,7 @@
   { "id": "boot",
     "name": "Bootloader",
     "icon": "bootloader.png",
-    "version":"0.04",
+    "version":"0.05",
     "description": "This is needed by Bangle.js to automatically load the clock, menu, widgets and settings",
     "tags": "tool,system",
     "storage": [
@@ -24,12 +24,38 @@
     ],
     "sortorder" : -10
   },
+  { "id": "about",
+    "name": "About",
+    "icon": "app.png",
+    "version":"0.01",
+    "description": "Bangle.js About page - showing software version, stats, and a collaborative mural from the Bangle.js KickStarter backers",
+    "tags": "tool,system",
+    "allow_emulator":true,
+    "storage": [
+      {"name":"+about","url":"app.json"},
+      {"name":"-about","url":"app.js"},
+      {"name":"*about","url":"app-icon.js","evaluate":true}
+    ]
+  },
+  { "id": "welcome",
+    "name": "Welcome",
+    "icon": "app.png",
+    "version":"0.02",
+    "description": "Appears at first boot and explains how to use Bangle.js",
+    "tags": "welcome",
+    "allow_emulator":true,
+    "storage": [
+      {"name":"+welcome","url":"app.json"},
+      {"name":"-welcome","url":"app.js"},
+      {"name":"*welcome","url":"app-icon.js","evaluate":true}
+    ]
+  },
   { "id": "gbridge",
     "name": "Gadgetbridge",
     "icon": "app.png",
     "version":"0.03",
     "description": "The default notification handler for Gadgetbridge notifications from Android",
-    "tags": "tool,system,android",
+    "tags": "tool,system,android,widget",
     "storage": [
       {"name":"+gbridge","url":"app.json"},
       {"name":"-gbridge","url":"app.js"},
@@ -55,7 +81,7 @@
   { "id": "setting",
     "name": "Settings",
     "icon": "settings.png",
-    "version":"0.02",
+    "version":"0.03",
     "description": "A menu for setting up Bangle.js",
     "tags": "tool,system",
     "storage": [
@@ -71,7 +97,7 @@
     "icon": "app.png",
     "version":"0.01",
     "description": "Set and respond to alarms",
-    "tags": "tool,alarm",
+    "tags": "tool,alarm,widget",
     "storage": [
       {"name":"+alarm","url":"app.json"},
       {"name":"-alarm","url":"app.js"},
@@ -111,9 +137,10 @@
   { "id": "clck3x2",
     "name": "3x2 Pixel Clock",
     "icon": "clock3x2.png",
-    "version":"0.02",
+    "version":"0.03",
     "description": "This is a simple clock using minimalistic 3x2 pixel numerical digits",
     "tags": "clock",
+    "allow_emulator":true,
     "storage": [
       {"name":"+clck3x2","url":"clock3x2.json"},
       {"name":"-clck3x2","url":"clock3x2.js"},
@@ -185,7 +212,7 @@
   { "id": "gpstime",
     "name": "GPS Time",
     "icon": "gpstime.png",
-    "version":"0.01",
+    "version":"0.02",
     "description": "Update the Bangle.js's clock based on the time from the GPS receiver",
     "tags": "tool,gps",
     "storage": [
@@ -223,7 +250,7 @@
     "version":"0.01",
     "interface": "interface.html",
     "description": "Application that allows you to record a GPS track. Can run in background",
-    "tags": "tool,outdoors,gps",
+    "tags": "tool,outdoors,gps,widget",
     "storage": [
       {"name":"+gpsrec","url":"app.json"},
       {"name":"-gpsrec","url":"app.js"},
@@ -259,7 +286,7 @@
   { "id": "sbat",
     "name": "Battery Level Widget",
     "icon": "widget-battery.png",
-    "version":"0.01",
+    "version":"0.02",
     "description": "Show the current battery level and charging status in the top right of the clock",
     "tags": "widget,battery",
     "type":"widget",
@@ -290,6 +317,17 @@
       {"name":"+hrm","url":"heartrate.json"},
       {"name":"-hrm","url":"heartrate.js"},
       {"name":"*hrm","url":"heartrate-icon.js","evaluate":true}
+    ]
+  },
+  { "id": "whrm",
+    "name": "Simple Heart Rate widget",
+    "icon": "widget.png",
+    "version":"0.01",
+    "description": "When the screen is on, the widget turns on the heart rate monitor and displays the current heart rate (or last known in grey). For this to work well you'll need at least a 15 second LCD Timeout.",
+    "tags": "health,widget",
+    "storage": [
+      {"name":"+whrm","url":"widget.json"},
+      {"name":"=whrm","url":"widget.js"}
     ]
   },
   { "id": "stetho",
@@ -709,7 +747,7 @@
   { "id": "wpedom",
     "name": "Pedometer widget",
     "icon": "pedometer_widget.png",
-    "version":"0.02",
+    "version":"0.06",
     "description": "Daily pedometer widget",
     "tags": "widget",
     "type":"widget",
