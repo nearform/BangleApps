@@ -66,10 +66,10 @@ function showApps() {
     '< Back': () => m = showMainMenu(),
   };
 
-  var list = storage.list().filter((a)=> {
-    return a[0]=='+' && a !== '+setting';
+  var list = storage.list(/\.info$/).filter((a)=> {
+    return a !== 'setting.info';
   }).sort().map((app) => {
-    var ret = storage.readJSON(app);
+    var ret = storage.readJSON(app,1)||{};
     ret[''] = app;
     return ret;
   });
