@@ -11,6 +11,7 @@ httpGet("apps.json").then(apps=>{
   }
   appJSON.sort(appSorter);
   refreshLibrary();
+  refreshFilter();
 });
 
 // Status
@@ -250,9 +251,18 @@ function showTab(tabname) {
 
 // =========================================== Library
 
-var activeFilter = '';
+var chips = Array.from(document.querySelectorAll('.chip')).map(chip => chip.attributes.filterid.value)
+var hash = window.location.hash ? window.location.hash.slice(1) : '';
+
+var activeFilter = !!~chips.indexOf(hash) ? hash : '';
 var currentSearch = '';
 
+function refreshFilter(){
+  var filtersContainer = document.querySelector("#librarycontainer .filter-nav");
+  filtersContainer.querySelector('.active').classList.remove('active');
+  if(activeFilter) filtersContainer.querySelector('.chip[filterid="'+activeFilter+'"]').classList.add('active')
+  else filtersContainer.querySelector('.chip[filterid]').classList.add('active')
+}
 function refreshLibrary() {
   var panelbody = document.querySelector("#librarycontainer .panel-body");
   var visibleApps = appJSON;
@@ -272,11 +282,12 @@ function refreshLibrary() {
     if (versionInfo) versionInfo = " <small>("+versionInfo+")</small>";
     return `<div class="tile column col-6 col-sm-12 col-xs-12">
     <div class="tile-icon">
-      <figure class="avatar"><img src="apps/${app.icon?`${app.id}/${app.icon}`:"unknown.png"}" alt="${escapeHtml(app.name)}"></figure>
+      <figure class="avatar"><img src="apps/${app.icon?`${app.id}/${app.icon}`:"unknown.png"}" alt="${escapeHtml(app.name)}"></figure><br/>
     </div>
     <div class="tile-content">
       <p class="tile-title text-bold">${escapeHtml(app.name)} ${versionInfo}</p>
       <p class="tile-subtitle">${escapeHtml(app.description)}</p>
+      <a href="https://github.com/espruino/BangleApps/tree/master/apps/${app.id}" target="_blank" class="link-github"><img src="img/github-icon-sml.png" alt="See the code on GitHub"/></a>
     </div>
     <div class="tile-action">
       <button class="btn btn-link btn-action btn-lg ${(appInstalled&&app.interface)?"":"d-hide"}" appid="${app.id}" title="Download data from app"><i class="icon icon-download"></i></button>
@@ -308,7 +319,8 @@ function refreshLibrary() {
           return;
         }
         var baseurl = window.location.href;
-        var url = baseurl+"apps/"+app.id+"/"+file.url;
+        baseurl = baseurl.substr(0,baseurl.lastIndexOf("/"));
+        var url = baseurl+"/apps/"+app.id+"/"+file.url;
         window.open(`https://espruino.com/ide/emulator.html?codeurl=${url}&upload`);
       } else if (icon.classList.contains("icon-upload")) {
         // upload
@@ -364,6 +376,7 @@ function refreshLibrary() {
   });
 }
 
+refreshFilter();
 refreshLibrary();
 // =========================================== My Apps
 
@@ -504,13 +517,12 @@ Comms.watchConnectionChange(handleConnectionChange);
 
 var filtersContainer = document.querySelector("#librarycontainer .filter-nav");
 filtersContainer.addEventListener('click', ({ target }) => {
-  if (!target.hasAttribute('filterid')) return;
   if (target.classList.contains('active')) return;
 
-  activeFilter = target.getAttribute('filterid');
-  filtersContainer.querySelector('.active').classList.remove('active');
-  target.classList.add('active');
+  activeFilter = target.getAttribute('filterid') || '';
+  refreshFilter();
   refreshLibrary();
+  window.location.hash = activeFilter
 });
 
 var librarySearchInput = document.querySelector("#searchform input");

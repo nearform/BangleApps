@@ -16,12 +16,11 @@ function resetSettings() {
     log: false,            // Do log messages appear on screen?
     timeout: 10,           // Default LCD timeout in seconds
     vibrate: true,         // Vibration enabled by default. App must support
-    beep: true,            // Beep enabled by default. App must support
+    beep: "vib",            // Beep enabled by default. App must support
     timezone: 0,           // Set the timezone for the device
     HID : false,           // BLE HID mode, off by default
     clock: null,           // a string for the default clock's name
     "12hour" : false,      // 12 or 24 hour clock?
-    distance : "kilometer" // or "mile"
     // welcomed : undefined/true (whether welcome app should show)
   };
   updateSettings();
@@ -33,6 +32,8 @@ if (!settings) resetSettings();
 const boolFormat = v => v ? "On" : "Off";
 
 function showMainMenu() {
+  var beepV = [ false,true,"vib" ];
+  var beepN = [ "Off","Piezo","Vibrate" ];
   const mainmenu = {
     '': { 'title': 'Settings' },
     'Make Connectable': makeConnectable,
@@ -72,14 +73,14 @@ function showMainMenu() {
       }
     },
     'Beep': {
-      value: settings.beep,
-      format: boolFormat,
-      onchange: () => {
-        settings.beep = !settings.beep;
+      value: 0|beepV.indexOf(settings.beep),
+      min:0,max:2,
+      format: v=>beepN[v],
+      onchange: v => {
+        settings.beep = beepV[v];
+        if (v==1) { analogWrite(D18,0.5,{freq:2000});setTimeout(()=>D18.reset(),200) } // piezo
+        else if (v==2) { analogWrite(D13,0.1,{freq:2000});setTimeout(()=>D13.reset(),200) } // vibrate
         updateSettings();
-        if (settings.beep) {
-          Bangle.beep(1);
-        }
       }
     },
     'Vibration': {
@@ -141,15 +142,7 @@ function showLocaleMenu() {
         settings["12hour"] = v;
         updateSettings();
       }
-    },
-    'Distance/Speed': {
-      value: settings.distance=="mile",
-      format: v => v?"mile":"km",
-      onchange: v => {
-        settings.distance = v?"mile":"kilometer";
-        updateSettings();
-      }
-    },
+    }
   };
   return E.showMenu(localemenu);
 }
